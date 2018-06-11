@@ -1,0 +1,10 @@
+D:\Projects2017\Utilities\Utilities.RequestClient\Utilities.RequestClient\bin\Release\netstandard2.0\Utilities.RequestClient.xml
+D:\Projects2017\Utilities\Utilities.RequestClient\Utilities.RequestClient\bin\Release\netstandard2.0\Utilities.RequestClient.deps.json
+D:\Projects2017\Utilities\Utilities.RequestClient\Utilities.RequestClient\bin\Release\netstandard2.0\Utilities.RequestClient.dll
+D:\Projects2017\Utilities\Utilities.RequestClient\Utilities.RequestClient\bin\Release\netstandard2.0\Utilities.RequestClient.pdb
+D:\Projects2017\Utilities\Utilities.RequestClient\Utilities.RequestClient\obj\Release\netstandard2.0\Utilities.RequestClient.csproj.CoreCompileInputs.cache
+D:\Projects2017\Utilities\Utilities.RequestClient\Utilities.RequestClient\obj\Release\netstandard2.0\Utilities.RequestClient.AssemblyInfoInputs.cache
+D:\Projects2017\Utilities\Utilities.RequestClient\Utilities.RequestClient\obj\Release\netstandard2.0\Utilities.RequestClient.AssemblyInfo.cs
+D:\Projects2017\Utilities\Utilities.RequestClient\Utilities.RequestClient\obj\Release\netstandard2.0\Utilities.RequestClient.dll
+D:\Projects2017\Utilities\Utilities.RequestClient\Utilities.RequestClient\obj\Release\netstandard2.0\Utilities.RequestClient.pdb
+D:\Projects2017\Utilities\Utilities.RequestClient\Utilities.RequestClient\obj\Release\netstandard2.0\Utilities.RequestClient.csprojAssemblyReference.cache

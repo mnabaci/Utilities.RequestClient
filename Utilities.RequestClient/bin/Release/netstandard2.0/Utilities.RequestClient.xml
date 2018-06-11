@@ -1,0 +1,304 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Utilities.RequestClient</name>
+    </assembly>
+    <members>
+        <member name="T:Utilities.RequestClient.RequestClient">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Utilities.RequestClient.RequestClient.DefaultTimeoutDuration">
+            <summary>
+            Default timeout duration as second
+            </summary>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.#ctor(System.Uri)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="baseAddress"></param>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.SetBaseUri(System.String)">
+            <summary>
+            Set base uri
+            </summary>
+            <param name="uriString">Uri as string</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.FormatException"></exception>
+            <returns>New <see cref="T:Utilities.RequestClient.RequestClient"/> object</returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.SetBaseUri(System.Uri)">
+            <summary>
+            Set base uri
+            </summary>
+            <param name="uri"></param>
+            <returns>New <see cref="T:Utilities.RequestClient.RequestClient"/> object</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.SetEncoding(System.Text.Encoding)">
+            <summary>
+            Set encoding
+            </summary>
+            <param name="encoding"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.SetMediaType(System.String)">
+            <summary>
+            Set media type
+            </summary>
+            <param name="mediaType"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.SetAuthorizationHeader(System.String,System.String)">
+            <summary>
+            Set authorizationHeader 
+            </summary>
+            <param name="scheme"></param>
+            <param name="parameter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.SetBasicAuthorizationHeader(System.String)">
+            <summary>
+            Set basic authorization header 
+            </summary>
+            <param name="parameter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.SetBearerAuthorizationHeader(System.String)">
+            <summary>
+            Set bearer authorization header 
+            </summary>
+            <param name="parameter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.AddHeader(System.String,System.String)">
+            <summary>
+            Add custom header to http request
+            </summary>
+            <param name="key">Header key</param>
+            <param name="value">Header value</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.SetTimeout(System.Double)">
+            <summary>
+            Default timeout duration: 5 minutes
+            Sets timeout duration for request
+            </summary>
+            <param name="seconds">Timeout duration as seconds</param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.Dispose">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.Get``1(System.String)">
+            <summary>
+            Sync Http Get request with uri
+            </summary>
+            <typeparam name="T">DTO typed object</typeparam>
+            <param name="uri">Api uri without base uri</param>
+            <returns>Structed deserialized response</returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.Get(System.String)">
+            <summary>
+            Sync Http Get request with uri
+            </summary>
+            <param name="uri">Api uri without base uri</param>
+            <returns>Json string</returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.GetAsync``1(System.String)">
+            <summary>
+            Async Http Get request with uri.
+            </summary>
+            <typeparam name="T">DTO typed object</typeparam>
+            <param name="uri">Api uri without base uri</param>
+            <returns>Json string</returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.GetAsync(System.String)">
+            <summary>
+            Async Http Get request with uri.
+            </summary>
+            <param name="uri">Api uri without base uri</param>
+            <returns>Structed deserialized response</returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.Post``2(System.String,``1)">
+            <summary>
+            Sync Http Post request with uri and body object
+            </summary>
+            <typeparam name="T">DTO typed object</typeparam>
+            <typeparam name="TK">DTO typed object</typeparam>
+            <param name="uri">Api uri without base uri</param>
+            <param name="body">DTO typed object</param>
+            <returns>Structed deserialized response</returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.Post``1(System.String,System.Object)">
+            <summary>
+            Sync Http Post request with uri and body object
+            </summary>
+            <typeparam name="T">DTO typed object</typeparam>
+            <param name="uri">Api uri without base uri</param>
+            <param name="body">DTO typed object</param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.Post(System.String,System.Object)">
+            <summary>
+            Sync Http Post request with uri and body object
+            </summary>
+            <param name="uri">Api uri without base uri</param>
+            <param name="body">DTO typed object</param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.PostAsync``1(System.String,System.String)">
+            <summary>
+            Async Post Http request with uri and Json string body.
+            </summary>
+            <typeparam name="T">DTO typed object</typeparam>
+            <param name="uri">Api uri without base uri</param>
+            <param name="body">Json String</param>
+            <returns>Structed deserialized response</returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.PostAsync(System.String,System.String)">
+            <summary>
+            Async Post Http request with uri and Json string body.
+            </summary>
+            <param name="uri">Api uri without base uri</param>
+            <param name="body">Json String</param>
+            <returns>JSON string</returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.PostAsync``1(System.String,System.Object)">
+            <summary>
+            Async Post Http request
+            </summary>
+            <typeparam name="T">DTO typed object</typeparam>
+            <param name="uri">Api uri without base uri</param>
+            <param name="body">DTO typed object</param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.PostAsync(System.String,System.Object)">
+            <summary>
+            Async Post Http request
+            </summary>
+            <param name="uri"></param>
+            <param name="body"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.PostAsync``2(System.String,``1)">
+            <summary>
+            Async Post Http request with uri and generic typed body. 
+            Body will be serialized with Json.Net inside the function
+            </summary>
+            <typeparam name="T">DTO typed object</typeparam>
+            <typeparam name="TK">DTO typed object</typeparam>
+            <param name="uri">Api uri without base uri</param>
+            <param name="body">Generic typed body.</param>
+            <returns>Structed deserialized response</returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.Put``1(System.String,System.Object)">
+            <summary>
+            Http Put request with uri.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="uri"></param>
+            <param name="body"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.Put``2(System.String,``1)">
+            <summary>
+            Http Put request with uri.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TK"></typeparam>
+            <param name="uri"></param>
+            <param name="body"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.Put(System.String,System.Object)">
+            <summary>
+            Http Put request with uri.
+            </summary>
+            <param name="uri"></param>
+            <param name="body"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.PutAsync``2(System.String,``1)">
+            <summary>
+            Async Put Http request with uri and generic typed body. 
+            Body will be serialized with Json.Net inside the function
+            </summary>
+            <typeparam name="T">DTO typed object</typeparam>
+            <typeparam name="TK">DTO typed object</typeparam>
+            <param name="uri">Api uri without base uri</param>
+            <param name="body">Generic typed body.</param>
+            <returns>Structed deserialized response</returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.PutAsync``1(System.String,System.Object)">
+            <summary>
+            Async Http Put request with uri.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="uri"></param>
+            <param name="body"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.PutAsync``1(System.String,System.String)">
+            <summary>
+            Async Http Put request with uri.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="uri"></param>
+            <param name="body"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.PutAsync(System.String,System.String)">
+            <summary>
+            Async Http Put request with uri.
+            </summary>
+            <param name="uri"></param>
+            <param name="body"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.PutAsync(System.String,System.Object)">
+            <summary>
+            Async Http Put request with uri.
+            </summary>
+            <param name="uri"></param>
+            <param name="body"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.Delete``1(System.String)">
+            <summary>
+            Sync Http Delete request with uri
+            </summary>
+            <typeparam name="T">DTO typed object</typeparam>
+            <param name="uri">Api uri without base uri</param>
+            <returns>Structed deserialized response</returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.Delete(System.String)">
+            <summary>
+            Sync Http Delete request with uri
+            </summary>
+            <param name="uri">Api uri without base uri</param>
+            <returns>Json string</returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.DeleteAsync(System.String)">
+            <summary>
+            Async Http Delete request with uri.
+            </summary>
+            <param name="uri">Api uri without base uri</param>
+            <returns>Structed deserialized response</returns>
+        </member>
+        <member name="M:Utilities.RequestClient.RequestClient.DeleteAsync``1(System.String)">
+            <summary>
+            Async Http Delete request with uri.
+            </summary>
+            <typeparam name="T">DTO typed object</typeparam>
+            <param name="uri">Api uri without base uri</param>
+            <returns>T type object</returns>
+        </member>
+    </members>
+</doc>
