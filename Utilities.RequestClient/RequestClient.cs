@@ -10,31 +10,61 @@ using Utilities.Serialization;
 namespace Utilities.RequestClient
 {
     /// <summary>
-    /// 
+    /// Easiest way to handle rest requests
     /// </summary>
+    /// <inheritdoc cref="IDisposable"/>
     public class RequestClient : IDisposable
     {
+        /// <summary>
+        /// Http client handler
+        /// </summary>
         private readonly HttpClientHandler _handler;
 
+        /// <summary>
+        /// Http client
+        /// </summary>
         private readonly HttpClient _client;
 
+        /// <summary>
+        /// Request's encoding
+        /// </summary>
         private Encoding _encoding = Encoding.UTF8;
 
         /// <summary>
         /// Default timeout duration as second
         /// </summary>
         private const double DefaultTimeoutDuration = 100;
+
+        /// <summary>
+        /// Timeout message
+        /// </summary>
         private const string TimeoutMessage = "Timeout.";
+
+        /// <summary>
+        /// Bad request message
+        /// </summary>
         private const string BadRequestMessage = "Bad Request.";
+
+        /// <summary>
+        /// Unknown error message
+        /// </summary>
         private const string UnknownErrorMessage = "An error has occured.";
+
+        /// <summary>
+        /// Request's media type
+        /// </summary>
         private string _mediaType = "application/json";
-        private Uri BaseUri { get; set; }
+
+        /// <summary>
+        /// Base uri
+        /// </summary>
+        private Uri BaseUri { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="baseAddress"></param>
-        public RequestClient(Uri baseAddress)
+        private RequestClient(Uri baseAddress)
         {
             _handler = new HttpClientHandler();
             _client = new HttpClient(_handler)
@@ -50,6 +80,17 @@ namespace Utilities.RequestClient
             BaseUri = baseAddress;
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public void Dispose()
+        {
+            _client.Dispose();
+            _handler.Dispose();
+        }
+
+        #region Settings
+
         /// <summary>
         /// Set base uri
         /// </summary>
@@ -60,8 +101,8 @@ namespace Utilities.RequestClient
         public static RequestClient SetBaseUri(string uriString)
         {
             if (string.IsNullOrWhiteSpace(uriString)) throw new ArgumentNullException(nameof(uriString));
-            Uri uri;
-            if (Uri.TryCreate(uriString, UriKind.Absolute, out uri) == false) throw new FormatException("Uri format is invalid.");
+
+            if (Uri.TryCreate(uriString, UriKind.Absolute, out var uri) == false) throw new FormatException("Uri format is invalid.");
 
             return SetBaseUri(uri);
         }
@@ -82,7 +123,7 @@ namespace Utilities.RequestClient
         /// <summary>
         /// Set encoding
         /// </summary>
-        /// <param name="encoding"></param>
+        /// <param name="encoding">Request's encoding</param>
         /// <returns></returns>
         public RequestClient SetEncoding(Encoding encoding)
         {
@@ -93,7 +134,7 @@ namespace Utilities.RequestClient
         /// <summary>
         /// Set media type
         /// </summary>
-        /// <param name="mediaType"></param>
+        /// <param name="mediaType">Request's media type</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         public RequestClient SetMediaType(string mediaType)
@@ -109,8 +150,8 @@ namespace Utilities.RequestClient
         /// <summary>
         /// Set authorizationHeader 
         /// </summary>
-        /// <param name="scheme"></param>
-        /// <param name="parameter"></param>
+        /// <param name="scheme">Authorization scheme</param>
+        /// <param name="parameter">Authorization key</param>
         /// <returns></returns>
         public RequestClient SetAuthorizationHeader(string scheme, string parameter)
         {
@@ -121,7 +162,7 @@ namespace Utilities.RequestClient
         /// <summary>
         /// Set basic authorization header 
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">Authorization key</param>
         /// <returns></returns>
         public RequestClient SetBasicAuthorizationHeader(string parameter)
         {
@@ -131,7 +172,7 @@ namespace Utilities.RequestClient
         /// <summary>
         /// Set bearer authorization header 
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="parameter">Authorization key</param>
         /// <returns></returns>
         public RequestClient SetBearerAuthorizationHeader(string parameter)
         {
@@ -158,22 +199,17 @@ namespace Utilities.RequestClient
         /// Default timeout duration: 5 minutes
         /// Sets timeout duration for request
         /// </summary>
-        /// <param name="seconds">Timeout duration as seconds</param>
+        /// <param name="milliseconds">Timeout duration as milliseconds</param>
         /// <returns></returns>
-        public RequestClient SetTimeout(double seconds)
+        public RequestClient SetTimeout(double milliseconds)
         {
-            _client.Timeout = TimeSpan.FromSeconds(seconds);
+            _client.Timeout = TimeSpan.FromMilliseconds(milliseconds);
             return this;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual void Dispose()
-        {
-            _client.Dispose();
-            _handler.Dispose();
-        }
+        #endregion
+
+        #region Get
 
         /// <summary>
         /// Sync Http Get request with uri
@@ -181,14 +217,15 @@ namespace Utilities.RequestClient
         /// <typeparam name="T">DTO typed object</typeparam>
         /// <param name="uri">Api uri without base uri</param>
         /// <returns>Structed deserialized response</returns>
-        public RequestResult<T> Get<T>(string uri) where T : class
+        public RequestResult<T> Get<T>(string uri)
+            where T : class
         {
             try
             {
-                var response = Task.Run(() => _client.GetAsync($"{BaseUri}{uri}")).Result;
-                var content = Task.Run(() => response.Content.ReadAsStringAsync()).Result;
-                var contentObject = content.Deserialize<T>();
-                return new RequestResult<T> { Result = contentObject, StatusCode = response.StatusCode, ExceptionDetail = response.StatusCode == HttpStatusCode.OK ? string.Empty : content };
+                var response = Task.Run(() => _client.GetAsync(GetCompleteUrl(uri))).Result;
+                var responseContent = Task.Run(() => response.Content.ReadAsStringAsync()).Result;
+                var responseObject = responseContent.Deserialize<T>();
+                return new RequestResult<T> { Result = responseObject, StatusCode = response.StatusCode, ExceptionDetail = response.StatusCode == HttpStatusCode.OK ? string.Empty : responseContent };
             }
             catch (AggregateException ae)
             {
@@ -214,23 +251,27 @@ namespace Utilities.RequestClient
         /// Sync Http Get request with uri
         /// </summary>
         /// <param name="uri">Api uri without base uri</param>
-        /// <returns>Json string</returns>
+        /// <returns>Result as string</returns>
         public RequestResult<string> Get(string uri)
         {
             return Get<string>(uri);
         }
 
+        #endregion
+
+        #region GetAsync
+
         /// <summary>
-        /// Async Http Get request with uri.
+        /// Async Http Get request with uri
         /// </summary>
         /// <typeparam name="T">DTO typed object</typeparam>
         /// <param name="uri">Api uri without base uri</param>
-        /// <returns>Json string</returns>
+        /// <returns>Structed deserialized response</returns>
         public async Task<RequestResult<T>> GetAsync<T>(string uri) where T : class
         {
             try
             {
-                using (var response = await _client.GetAsync($"{BaseUri}{uri}"))
+                using (var response = await _client.GetAsync(GetCompleteUrl(uri)))
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
                     var responseObject = responseContent.Deserialize<T>();
@@ -252,14 +293,18 @@ namespace Utilities.RequestClient
         }
 
         /// <summary>
-        /// Async Http Get request with uri.
+        /// Async Http Get request with uri
         /// </summary>
         /// <param name="uri">Api uri without base uri</param>
-        /// <returns>Structed deserialized response</returns>
+        /// <returns>Result as string</returns>
         public async Task<RequestResult<string>> GetAsync(string uri)
         {
             return await GetAsync<string>(uri);
         }
+
+        #endregion
+        
+        #region Post
 
         /// <summary>
         /// Sync Http Post request with uri and body object
@@ -275,8 +320,8 @@ namespace Utilities.RequestClient
         {
             try
             {
-                var content = new StringContent(body.Serialize(), _encoding, _mediaType);
-                var response = Task.Run(() => _client.PostAsync($"{BaseUri}{uri}", content)).Result;
+                var content = GenerateStringContent(body);
+                var response = Task.Run(() => _client.PostAsync(GetCompleteUrl(uri), content)).Result;
                 var responseContent = Task.Run(() => response.Content.ReadAsStringAsync()).Result;
                 var responseObject = responseContent.Deserialize<T>();
                 return new RequestResult<T> { Result = responseObject, StatusCode = response.StatusCode, ExceptionDetail = response.StatusCode == HttpStatusCode.OK ? string.Empty : responseContent };
@@ -307,7 +352,7 @@ namespace Utilities.RequestClient
         /// <typeparam name="T">DTO typed object</typeparam>
         /// <param name="uri">Api uri without base uri</param>
         /// <param name="body">DTO typed object</param>
-        /// <returns></returns>
+        /// <returns>Structed deserialized response</returns>
         public RequestResult<T> Post<T>(string uri, object body)
             where T : class
         {
@@ -319,26 +364,54 @@ namespace Utilities.RequestClient
         /// </summary>
         /// <param name="uri">Api uri without base uri</param>
         /// <param name="body">DTO typed object</param>
-        /// <returns></returns>
+        /// <returns>Result as string</returns>
         public RequestResult<string> Post(string uri, object body)
         {
             return Post<string>(uri, body);
         }
 
         /// <summary>
-        /// Async Post Http request with uri and Json string body.
+        /// Sync Http Post request with uri
         /// </summary>
         /// <typeparam name="T">DTO typed object</typeparam>
         /// <param name="uri">Api uri without base uri</param>
-        /// <param name="body">Json String</param>
         /// <returns>Structed deserialized response</returns>
-        public async Task<RequestResult<T>> PostAsync<T>(string uri, string body) where T : class
+        public RequestResult<T> Post<T>(string uri)
+            where T : class
         {
-            var content = new StringContent(body);
+            return Post<T>(uri, null);
+        }
 
+        /// <summary>
+        /// Sync Http Post request with uri
+        /// </summary>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <returns>Result as string</returns>
+        public RequestResult<string> Post(string uri)
+        {
+            return Post<string>(uri);
+        }
+
+        #endregion
+
+        #region PostAsync
+
+        /// <summary>
+        /// Async Http Post request with uri and body object
+        /// </summary>
+        /// <typeparam name="T">DTO typed object</typeparam>
+        /// <typeparam name="TK">DTO typed object</typeparam>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <param name="body">DTO typed object</param>
+        /// <returns>Structed deserialized response</returns>
+        public async Task<RequestResult<T>> PostAsync<T, TK>(string uri, TK body)
+            where T : class
+            where TK : class
+        {
             try
             {
-                using (var response = await _client.PostAsync($"{BaseUri}{uri}", content))
+                var content = GenerateStringContent(body);
+                using (var response = await _client.PostAsync(GetCompleteUrl(uri), content))
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
                     var responseObject = responseContent.Deserialize<T>();
@@ -360,23 +433,12 @@ namespace Utilities.RequestClient
         }
 
         /// <summary>
-        /// Async Post Http request with uri and Json string body.
-        /// </summary>
-        /// <param name="uri">Api uri without base uri</param>
-        /// <param name="body">Json String</param>
-        /// <returns>JSON string</returns>
-        public async Task<RequestResult<string>> PostAsync(string uri, string body)
-        {
-            return await PostAsync<string>(uri, body);
-        }
-
-        /// <summary>
-        /// Async Post Http request
+        /// Async Http Post request with uri and body object
         /// </summary>
         /// <typeparam name="T">DTO typed object</typeparam>
         /// <param name="uri">Api uri without base uri</param>
         /// <param name="body">DTO typed object</param>
-        /// <returns></returns>
+        /// <returns>Structed deserialized response</returns>
         public async Task<RequestResult<T>> PostAsync<T>(string uri, object body)
             where T : class
         {
@@ -384,61 +446,58 @@ namespace Utilities.RequestClient
         }
 
         /// <summary>
-        /// Async Post Http request
+        /// Async Http Post request with uri and body object
         /// </summary>
-        /// <param name="uri"></param>
-        /// <param name="body"></param>
-        /// <returns></returns>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <param name="body">DTO typed object</param>
+        /// <returns>Result as string</returns>
         public async Task<RequestResult<string>> PostAsync(string uri, object body)
         {
             return await PostAsync<string>(uri, body);
         }
 
         /// <summary>
-        /// Async Post Http request with uri and generic typed body. 
-        /// Body will be serialized with Json.Net inside the function
+        /// Async Http Post request with uri
+        /// </summary>
+        /// <typeparam name="T">DTO typed object</typeparam>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <returns>Structed deserialized response</returns>
+        public async Task<RequestResult<T>> PostAsync<T>(string uri)
+            where T : class
+        {
+            return await PostAsync<T>(uri, null);
+        }
+
+        /// <summary>
+        /// Async Http Post request with uri
+        /// </summary>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <returns>Result as string</returns>
+        public async Task<RequestResult<string>> PostAsync(string uri)
+        {
+            return await PostAsync<string>(uri);
+        }
+
+        #endregion
+
+        #region Put
+
+        /// <summary>
+        /// Sync Http Put request with uri and body object
         /// </summary>
         /// <typeparam name="T">DTO typed object</typeparam>
         /// <typeparam name="TK">DTO typed object</typeparam>
         /// <param name="uri">Api uri without base uri</param>
-        /// <param name="body">Generic typed body.</param>
+        /// <param name="body">DTO typed object</param>
         /// <returns>Structed deserialized response</returns>
-        public async Task<RequestResult<T>> PostAsync<T, TK>(string uri, TK body)
-            where T : class
-            where TK : class
-        {
-            return await PostAsync<T>(uri, body.Serialize());
-        }
-
-        /// <summary>
-        /// Http Put request with uri.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="uri"></param>
-        /// <param name="body"></param>
-        /// <returns></returns>
-        public RequestResult<T> Put<T>(string uri, object body)
-            where T : class
-        {
-            return Put<T, object>(uri, body);
-        }
-
-        /// <summary>
-        /// Http Put request with uri.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TK"></typeparam>
-        /// <param name="uri"></param>
-        /// <param name="body"></param>
-        /// <returns></returns>
         public RequestResult<T> Put<T, TK>(string uri, TK body)
             where TK : class
             where T : class
         {
             try
             {
-                var content = new StringContent(body.Serialize(), _encoding, _mediaType);
-                var response = Task.Run(() => _client.PutAsync($"{BaseUri}{uri}", content)).Result;
+                var content = GenerateStringContent(body);
+                var response = Task.Run(() => _client.PutAsync(GetCompleteUrl(uri), content)).Result;
                 var responseContent = Task.Run(() => response.Content.ReadAsStringAsync()).Result;
                 var responseObject = responseContent.Deserialize<T>();
                 return new RequestResult<T> { Result = responseObject, StatusCode = response.StatusCode, ExceptionDetail = response.StatusCode == HttpStatusCode.OK ? string.Empty : responseContent };
@@ -464,59 +523,71 @@ namespace Utilities.RequestClient
         }
 
         /// <summary>
-        /// Http Put request with uri.
+        /// Sync Http Put request with uri and body object
         /// </summary>
-        /// <param name="uri"></param>
-        /// <param name="body"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">DTO typed object</typeparam>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <param name="body">DTO typed object</param>
+        /// <returns>Structed deserialized response</returns>
+        public RequestResult<T> Put<T>(string uri, object body)
+            where T : class
+        {
+            return Put<T, object>(uri, body);
+        }
+
+        /// <summary>
+        /// Sync Http Put request with uri and body object
+        /// </summary>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <param name="body">DTO typed object</param>
+        /// <returns>Result as string</returns>
         public RequestResult<string> Put(string uri, object body)
         {
             return Put<string>(uri, body);
         }
 
         /// <summary>
-        /// Async Put Http request with uri and generic typed body. 
-        /// Body will be serialized with Json.Net inside the function
+        /// Sync Http Put request with uri
+        /// </summary>
+        /// <typeparam name="T">DTO typed object</typeparam>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <returns>Structed deserialized response</returns>
+        public RequestResult<T> Put<T>(string uri)
+            where T : class
+        {
+            return Put<T>(uri, null);
+        }
+
+        /// <summary>
+        /// Sync Http Put request with uri
+        /// </summary>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <returns>Result as string</returns>
+        public RequestResult<string> Put(string uri)
+        {
+            return Put<string>(uri);
+        }
+
+        #endregion
+
+        #region PutAsync
+
+        /// <summary>
+        /// Async Http Put request with uri and body object
         /// </summary>
         /// <typeparam name="T">DTO typed object</typeparam>
         /// <typeparam name="TK">DTO typed object</typeparam>
         /// <param name="uri">Api uri without base uri</param>
-        /// <param name="body">Generic typed body.</param>
+        /// <param name="body">DTO typed object</param>
         /// <returns>Structed deserialized response</returns>
         public async Task<RequestResult<T>> PutAsync<T, TK>(string uri, TK body)
             where T : class
             where TK : class
         {
-            return await PutAsync<T>(uri, body.Serialize());
-        }
-
-        /// <summary>
-        /// Async Http Put request with uri.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="uri"></param>
-        /// <param name="body"></param>
-        /// <returns></returns>
-        public async Task<RequestResult<T>> PutAsync<T>(string uri, object body)
-             where T : class
-        {
-            return await PutAsync<T, object>(uri, body);
-        }
-
-        /// <summary>
-        /// Async Http Put request with uri.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="uri"></param>
-        /// <param name="body"></param>
-        /// <returns></returns>
-        public async Task<RequestResult<T>> PutAsync<T>(string uri, string body) where T : class
-        {
-            var content = new StringContent(body);
-
             try
             {
-                using (var response = await _client.PutAsync($"{BaseUri}{uri}", content))
+                var content = GenerateStringContent(body);
+                using (var response = await _client.PutAsync(GetCompleteUrl(uri), content))
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
                     var responseObject = responseContent.Deserialize<T>();
@@ -538,26 +609,54 @@ namespace Utilities.RequestClient
         }
 
         /// <summary>
-        /// Async Http Put request with uri.
+        /// Async Http Put request with uri and body object
         /// </summary>
-        /// <param name="uri"></param>
-        /// <param name="body"></param>
-        /// <returns></returns>
-        public async Task<RequestResult<string>> PutAsync(string uri, string body)
+        /// <typeparam name="T">DTO typed object</typeparam>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <param name="body">DTO typed object</param>
+        /// <returns>Structed deserialized response</returns>
+        public async Task<RequestResult<T>> PutAsync<T>(string uri, object body)
+             where T : class
+        {
+            return await PutAsync<T, object>(uri, body);
+        }
+
+        /// <summary>
+        /// Async Http Put request with uri and body object
+        /// </summary>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <param name="body">DTO typed object</param>
+        /// <returns>Result as string</returns>
+        public async Task<RequestResult<string>> PutAsync(string uri, object body)
         {
             return await PutAsync<string>(uri, body);
         }
 
         /// <summary>
-        /// Async Http Put request with uri.
+        /// Async Http Put request with uri
         /// </summary>
-        /// <param name="uri"></param>
-        /// <param name="body"></param>
-        /// <returns></returns>
-        public async Task<RequestResult<string>> PutAsync(string uri, object body)
+        /// <typeparam name="T">DTO typed object</typeparam>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <returns>Structed deserialized response</returns>
+        public async Task<RequestResult<T>> PutAsync<T>(string uri)
+            where T : class
         {
-            return await PutAsync<string>(uri, body);
+            return await PutAsync<T>(uri, null);
         }
+
+        /// <summary>
+        /// Async Http Put request with uri
+        /// </summary>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <returns>Result as string</returns>
+        public async Task<RequestResult<string>> PutAsync(string uri)
+        {
+            return await PutAsync<string>(uri);
+        }
+
+        #endregion
+
+        #region Delete
 
         /// <summary>
         /// Sync Http Delete request with uri
@@ -569,10 +668,10 @@ namespace Utilities.RequestClient
         {
             try
             {
-                var response = Task.Run(() => _client.DeleteAsync($"{BaseUri}{uri}")).Result;
-                var content = Task.Run(() => response.Content.ReadAsStringAsync()).Result;
-                var contentObject = content.Deserialize<T>();
-                return new RequestResult<T> { Result = contentObject, StatusCode = response.StatusCode, ExceptionDetail = response.StatusCode == HttpStatusCode.OK ? string.Empty : content };
+                var response = Task.Run(() => _client.DeleteAsync(GetCompleteUrl(uri))).Result;
+                var responseContent = Task.Run(() => response.Content.ReadAsStringAsync()).Result;
+                var responseObject = responseContent.Deserialize<T>();
+                return new RequestResult<T> { Result = responseObject, StatusCode = response.StatusCode, ExceptionDetail = response.StatusCode == HttpStatusCode.OK ? string.Empty : responseContent };
             }
             catch (AggregateException ae)
             {
@@ -598,33 +697,27 @@ namespace Utilities.RequestClient
         /// Sync Http Delete request with uri
         /// </summary>
         /// <param name="uri">Api uri without base uri</param>
-        /// <returns>Json string</returns>
+        /// <returns>Result as string</returns>
         public RequestResult<string> Delete(string uri)
         {
             return Delete<string>(uri);
         }
 
-        /// <summary>
-        /// Async Http Delete request with uri.
-        /// </summary>
-        /// <param name="uri">Api uri without base uri</param>
-        /// <returns>Structed deserialized response</returns>
-        public async Task<RequestResult<string>> DeleteAsync(string uri)
-        {
-            return await DeleteAsync<string>(uri);
-        }
+        #endregion
+
+        #region DeleteAsync
 
         /// <summary>
-        /// Async Http Delete request with uri.
+        /// Async Http Delete request with uri
         /// </summary>
         /// <typeparam name="T">DTO typed object</typeparam>
         /// <param name="uri">Api uri without base uri</param>
-        /// <returns>T type object</returns>
+        /// <returns>Structed deserialized response</returns>
         public async Task<RequestResult<T>> DeleteAsync<T>(string uri) where T : class
         {
             try
             {
-                using (var response = await _client.DeleteAsync($"{BaseUri}{uri}"))
+                using (var response = await _client.DeleteAsync(GetCompleteUrl(uri)))
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
                     var responseObject = responseContent.Deserialize<T>();
@@ -644,5 +737,41 @@ namespace Utilities.RequestClient
                 return new RequestResult<T> { StatusCode = HttpStatusCode.InternalServerError, ExceptionDetail = UnknownErrorMessage, Exception = ex };
             }
         }
+
+        /// <summary>
+        /// Async Http Delete request with uri
+        /// </summary>
+        /// <param name="uri">Api uri without base uri</param>
+        /// <returns>Result as string</returns>
+        public async Task<RequestResult<string>> DeleteAsync(string uri)
+        {
+            return await DeleteAsync<string>(uri);
+        }
+
+        #endregion
+
+        #region PrivateMethods
+
+        /// <summary>
+        /// Generates string content with given body object
+        /// </summary>
+        /// <param name="body">Body object</param>
+        /// <returns>String content with body object</returns>
+        private StringContent GenerateStringContent(object body)
+        {
+            return new StringContent(body.Serialize(), _encoding, _mediaType);
+        }
+
+        /// <summary>
+        /// Get complete request url. Concats base uri and given uri
+        /// </summary>
+        /// <param name="uri">Rest of the full url without base uri</param>
+        /// <returns>Complete request url</returns>
+        private string GetCompleteUrl(string uri)
+        {
+            return $"{BaseUri}{uri}";
+        }
+
+        #endregion
     }
 }
