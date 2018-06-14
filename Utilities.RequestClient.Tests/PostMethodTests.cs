@@ -1,5 +1,5 @@
-using System.Net;
 using AutoFixture;
+using System.Net;
 using Utilities.RequestClient.Tests.Base;
 using Utilities.RequestClient.Tests.TestObjects;
 using Utilities.Serialization;
