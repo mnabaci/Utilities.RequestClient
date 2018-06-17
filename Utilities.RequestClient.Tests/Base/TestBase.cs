@@ -2,6 +2,6 @@
 {
     public class TestBase
     {
-        internal const string BaseUri = "https://postman-echo.com/";
+        private protected const string BaseUri = "https://postman-echo.com/";
     }
 }
