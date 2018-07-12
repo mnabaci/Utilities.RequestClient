@@ -31,7 +31,7 @@ namespace Utilities.RequestClient
                 using (var response = await Client.PutAsync(GetCompleteUrl(uri), content))
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
-                    var responseObject = responseContent.Deserialize<T>();
+                    var responseObject = responseContent.Deserialize<T>(SerializationType);
                     return new RequestResult<T> { Result = responseObject, StatusCode = response.StatusCode, ExceptionDetail = response.StatusCode == HttpStatusCode.OK ? string.Empty : responseContent };
                 }
             }

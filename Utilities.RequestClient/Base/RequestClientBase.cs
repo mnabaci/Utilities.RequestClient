@@ -2,10 +2,16 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using Utilities.RequestClient.Extensions;
+using Utilities.RequestClient.Types;
 using Utilities.Serialization;
+using Utilities.Serialization.Options;
 
 namespace Utilities.RequestClient.Base
 {
+    /// <summary>
+    /// Request Client Base
+    /// </summary>
     public class RequestClientBase
     {
         /// <summary>
@@ -46,12 +52,31 @@ namespace Utilities.RequestClient.Base
         /// <summary>
         /// Request's media type
         /// </summary>
-        private protected string MediaType = "application/json";
+        private protected MediaTypes MediaType = MediaTypes.Json;
 
         /// <summary>
         /// Base uri
         /// </summary>
         private protected Uri BaseUri { get; }
+
+        /// <summary>
+        /// Serialization type for serialize request and response body
+        /// </summary>
+        private protected SerializationTypes SerializationType
+        {
+            get
+            {
+                switch (MediaType)
+                {
+                        case MediaTypes.Json:
+                            return SerializationTypes.Json;
+                        case MediaTypes.Xml:
+                            return SerializationTypes.Xml;
+                        default:
+                            return SerializationTypes.Default;
+                }
+            }
+        }
 
         /// <summary>
         /// Constructor
@@ -68,7 +93,7 @@ namespace Utilities.RequestClient.Base
             Client.DefaultRequestHeaders.AcceptLanguage.Add(StringWithQualityHeaderValue.Parse("tr-Tr"));
             Client.DefaultRequestHeaders.AcceptLanguage.Add(StringWithQualityHeaderValue.Parse("en-US"));
             Client.DefaultRequestHeaders.ExpectContinue = false;
-            Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaType));
+            Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaType.GetDescription()));
             Client.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue(Encoding.BodyName));
             BaseUri = baseUri;
         }
@@ -80,7 +105,7 @@ namespace Utilities.RequestClient.Base
         /// <returns>String content with body object</returns>
         private protected StringContent GenerateStringContent(object body)
         {
-            return new StringContent(body.Serialize(), Encoding, MediaType);
+            return new StringContent(body.Serialize(SerializationType), Encoding, MediaType.GetDescription());
         }
 
         /// <summary>

@@ -2,6 +2,8 @@
 using System.Net.Http.Headers;
 using System.Text;
 using Utilities.RequestClient.Base;
+using Utilities.RequestClient.Extensions;
+using Utilities.RequestClient.Types;
 
 namespace Utilities.RequestClient
 {
@@ -65,13 +67,12 @@ namespace Utilities.RequestClient
         /// <param name="mediaType">Request's media type</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public RequestClient SetMediaType(string mediaType)
+        public RequestClient SetMediaType(MediaTypes mediaType)
         {
-            if (string.IsNullOrEmpty(mediaType)) throw new ArgumentNullException(nameof(mediaType));
-
-            Client.DefaultRequestHeaders.Accept.Remove(new MediaTypeWithQualityHeaderValue(MediaType));
+            if (Enum.IsDefined(typeof(MediaTypes), mediaType) == false) throw new ArgumentException($"{nameof(mediaType)} is invalid.");
+            Client.DefaultRequestHeaders.Accept.Remove(new MediaTypeWithQualityHeaderValue(MediaType.GetDescription()));
             MediaType = mediaType;
-            Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaType));
+            Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaType.GetDescription()));
             return this;
         }
 

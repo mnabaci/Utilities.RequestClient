@@ -26,7 +26,7 @@ namespace Utilities.RequestClient
             {
                 var response = Task.Run(() => Client.GetAsync(GetCompleteUrl(uri))).Result;
                 var responseContent = Task.Run(() => response.Content.ReadAsStringAsync()).Result;
-                var responseObject = responseContent.Deserialize<T>();
+                var responseObject = responseContent.Deserialize<T>(SerializationType);
                 return new RequestResult<T> { Result = responseObject, StatusCode = response.StatusCode, ExceptionDetail = response.StatusCode == HttpStatusCode.OK ? string.Empty : responseContent };
             }
             catch (AggregateException ae)
