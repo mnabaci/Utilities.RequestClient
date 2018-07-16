@@ -1,7 +1,7 @@
 #   **RequestClient**
 ------------------------------
 
-![alt tag](https://raw.githubusercontent.com/mnabaci/Utilities.RequestClient/master/misc/request-client-icon-and-text.png)
+![alt tag](https://raw.githubusercontent.com/mnabaci/Utilities.RequestClient/master/misc/request-client-icon-with-text.png)
 
 Easiest way to handle _rest requests_ 
 
