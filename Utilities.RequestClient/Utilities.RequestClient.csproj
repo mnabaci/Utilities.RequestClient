@@ -4,11 +4,16 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseUrl>https://github.com/mnabaci/Utilities.RequestClient</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <Authors>Mehmet Nuri ABACI</Authors>
     <Company>mnabaci</Company>
-    <PackageIconUrl>https://www.shareicon.net/data/128x128/2016/01/03/231147_utility_256x256.png</PackageIconUrl>
+    <PackageIconUrl></PackageIconUrl>
     <Version>1.1.0</Version>
+    <Description>Easiest way to handle rest requests</Description>
+    <PackageProjectUrl>https://github.com/mnabaci/Utilities.RequestClient</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mnabaci/Utilities.RequestClient</RepositoryUrl>
+    <PackageTags>Request;Client;Rest;RestRequests</PackageTags>
+    <PackageReleaseNotes>new method overloads added</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

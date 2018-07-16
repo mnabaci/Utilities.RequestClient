@@ -91,21 +91,21 @@ namespace Utilities.RequestClient
         /// <summary>
         /// Set basic authorization header 
         /// </summary>
-        /// <param name="parameter">Authorization key</param>
+        /// <param name="basicAuthHeader">Authorization key</param>
         /// <returns></returns>
-        public RequestClient SetBasicAuthorizationHeader(string parameter)
+        public RequestClient SetBasicAuthorizationHeader(string basicAuthHeader)
         {
-            return SetAuthorizationHeader("Basic", parameter);
+            return SetAuthorizationHeader("Basic", basicAuthHeader);
         }
 
         /// <summary>
         /// Set bearer authorization header 
         /// </summary>
-        /// <param name="parameter">Authorization key</param>
+        /// <param name="bearerAuthHeader">Authorization key</param>
         /// <returns></returns>
-        public RequestClient SetBearerAuthorizationHeader(string parameter)
+        public RequestClient SetBearerAuthorizationHeader(string bearerAuthHeader)
         {
-            return SetAuthorizationHeader("Bearer", parameter);
+            return SetAuthorizationHeader("Bearer", bearerAuthHeader);
         }
 
         /// <summary>
@@ -125,14 +125,25 @@ namespace Utilities.RequestClient
         }
 
         /// <summary>
-        /// Default timeout duration: 5 minutes
         /// Sets timeout duration for request
+        /// Default timeout duration: 5 minutes
         /// </summary>
         /// <param name="milliseconds">Timeout duration as milliseconds</param>
         /// <returns></returns>
         public RequestClient SetTimeout(double milliseconds)
         {
-            Client.Timeout = TimeSpan.FromMilliseconds(milliseconds);
+            return SetTimeout(TimeSpan.FromMilliseconds(milliseconds));
+        }
+
+        /// <summary>
+        /// Sets timeout duration for request
+        /// Default timeout duration: 5 minutes
+        /// </summary>
+        /// <param name="timeout">Timeout duration</param>
+        /// <returns></returns>
+        public RequestClient SetTimeout(TimeSpan timeout)
+        {
+            Client.Timeout = timeout;
             return this;
         }
 
