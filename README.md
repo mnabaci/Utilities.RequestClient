@@ -1,12 +1,12 @@
 #   **RequestClient**
 ------------------------------
 
-![alt tag](https://raw.githubusercontent.com/GokGokalp/MetroBus/master/misc/metrobus-logo.png)
+![alt tag](https://raw.githubusercontent.com/mnabaci/Utilities.RequestClient/master/misc/request-client-icon-and-text.png)
 
 Easiest way to handle _rest requests_ 
 
 [![Build status](https://ci.appveyor.com/api/projects/status/swmrnn5l4ru48lck?svg=true)](https://ci.appveyor.com/project/mnabaci/utilities-requestclient)
-[![NuGet version](https://badge.fury.io/nu/MetroBus.svg)](https://badge.fury.io/nu/MetroBus)
+[![NuGet version](https://badge.fury.io/nu/Utilities.RequestClient.svg)](https://badge.fury.io/nu/Utilities.RequestClient)
 
 ### NuGet Packages
 ``` 
@@ -15,7 +15,7 @@ PM> Install-Package Utilities.RequestClient
 
 #### Features:
 - Currently supports XML and JSON request contents and **does not** support primitive types as return object excluding string
-- Provides easy way to handle **GET**, **POST**, **PUT** and **DELETE** requests as sync or asyns.
+- Provides easy way to handle **GET**, **POST**, **PUT** and **DELETE** requests as sync or async.
 
 Usage:
 -----
