@@ -22,6 +22,16 @@ namespace Utilities.RequestClient
         #region Settings
 
         /// <summary>
+        /// Get uri from enum's description attribute
+        /// </summary>
+        /// <param name="uri">Uri enum which has description attribute including base uri</param>
+        /// <returns></returns>
+        public static RequestClient SetBaseUri(Enum uri)
+        {
+            return SetBaseUri(uri.GetDescription());
+        }
+
+        /// <summary>
         /// Set base uri
         /// </summary>
         /// <param name="uriString">Uri as string</param>
