@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl></PackageLicenseUrl>
     <Authors>Mehmet Nuri ABACI</Authors>
     <Company>mnabaci</Company>
-    <PackageIconUrl></PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/mnabaci/Utilities.RequestClient/master/misc/request-client-icon.png</PackageIconUrl>
     <Version>1.1.0</Version>
     <Description>Easiest way to handle rest requests</Description>
     <PackageProjectUrl>https://github.com/mnabaci/Utilities.RequestClient</PackageProjectUrl>
