@@ -12,15 +12,23 @@ namespace Utilities.RequestClient.Types
         /// </summary>
         [Description("none")]
         None = 0,
+
         /// <summary>
         /// Json
         /// </summary>
         [Description("application/json")]
         Json = 1,
+
         /// <summary>
         /// Xml
         /// </summary>
         [Description("application/xml")]
-        Xml = 2
+        Xml = 2,
+
+        /// <summary>
+        /// Bson
+        /// </summary>
+        [Description("application/bson")]
+        Bson = 3
     }
 }

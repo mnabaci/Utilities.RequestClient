@@ -72,6 +72,8 @@ namespace Utilities.RequestClient.Base
                             return SerializationTypes.Json;
                         case MediaTypes.Xml:
                             return SerializationTypes.Xml;
+                        case MediaTypes.Bson:
+                            return SerializationTypes.Bson;
                         default:
                             return SerializationTypes.Default;
                 }
