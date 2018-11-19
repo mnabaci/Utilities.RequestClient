@@ -23,8 +23,8 @@ namespace Utilities.RequestClient
         {
             try
             {
-                var response = Task.Run(() => Client.DeleteAsync(GetCompleteUrl(uri))).Result;
-                var responseContent = Task.Run(() => response.Content.ReadAsStringAsync()).Result;
+                var response = Client.DeleteAsync(GetCompleteUrl(uri)).Result;
+                var responseContent = response.Content.ReadAsStringAsync().Result;
                 var responseObject = responseContent.Deserialize<T>(SerializationType);
                 return new RequestResult<T> { Result = responseObject, StatusCode = response.StatusCode, ExceptionDetail = response.StatusCode == HttpStatusCode.OK ? string.Empty : responseContent };
             }
