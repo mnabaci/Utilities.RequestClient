@@ -157,6 +157,16 @@ namespace Utilities.RequestClient
             return this;
         }
 
+        /// <summary>
+        /// Expect header for an HTTP request contains Continue
+        /// </summary>
+        /// <returns></returns>
+        public RequestClient ExpectContinue()
+        {
+            Client.DefaultRequestHeaders.ExpectContinue = true;
+            return this;
+        }
+
         #endregion
 
         /// <inheritdoc />
