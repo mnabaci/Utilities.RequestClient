@@ -14,7 +14,7 @@ PM> Install-Package Utilities.RequestClient
 ```
 
 #### Features:
-- Currently supports XML and JSON request contents and **does not** support primitive types as return object excluding string
+- Currently supports XML, JSON and BSON request contents and **does not** support primitive types as return object excluding string
 - Provides easy way to handle **GET**, **POST**, **PUT** and **DELETE** requests as sync or async.
 
 Usage:
