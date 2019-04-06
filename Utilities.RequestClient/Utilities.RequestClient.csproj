@@ -8,13 +8,12 @@
     <Authors>Mehmet Nuri ABACI</Authors>
     <Company>mnabaci</Company>
     <PackageIconUrl>https://raw.githubusercontent.com/mnabaci/Utilities.RequestClient/master/misc/request-client-icon.png</PackageIconUrl>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
     <Description>Easiest way to handle rest requests</Description>
     <PackageProjectUrl>https://github.com/mnabaci/Utilities.RequestClient</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mnabaci/Utilities.RequestClient</RepositoryUrl>
-    <PackageTags>Request;Client;Rest;RestRequests</PackageTags>
-    <PackageReleaseNotes>-Bson support added
--Package updates</PackageReleaseNotes>
+    <PackageTags>Request;Client;Rest;RestRequests;httpclient;webapi;post;get;</PackageTags>
+    <PackageReleaseNotes>-Bson support fixes</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
