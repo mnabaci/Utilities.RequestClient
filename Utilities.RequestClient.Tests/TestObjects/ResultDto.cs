@@ -3,7 +3,7 @@
     public class ResultDto
     {
         public Args args { get; set; }
-        public Data data { get; set; }
+        public dynamic data { get; set; }
         public Files files { get; set; }
         public Form form { get; set; }
         public Headers headers { get; set; }
@@ -12,11 +12,6 @@
     }
 
     public class Args
-    {
-        public string test { get; set; }
-    }
-
-    public class Data
     {
         public string test { get; set; }
     }

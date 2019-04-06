@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using Utilities.RequestClient.Result;
 using Utilities.Serialization;
@@ -25,9 +27,9 @@ namespace Utilities.RequestClient
             {
                 using (var response = await Client.GetAsync(GetCompleteUrl(uri)))
                 {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    var responseObject = responseContent.Deserialize<T>(SerializationType);
-                    return new RequestResult<T> { Result = responseObject, StatusCode = response.StatusCode, ExceptionDetail = response.StatusCode == HttpStatusCode.OK ? string.Empty : responseContent };
+                    var responseContent = typeof(T) == typeof(string) ? response.Content.ReadAsStringAsync().Result.Deserialize<T>(SerializationType) :
+    response.Content.ReadAsAsync<T>(new List<MediaTypeFormatter> { MediaTypeFormatter }).Result;
+                    return new RequestResult<T> { Result = responseContent, StatusCode = response.StatusCode, ExceptionDetail = response.StatusCode == HttpStatusCode.OK ? string.Empty : responseContent.Serialize() };
                 }
             }
             catch (HttpRequestException ex)

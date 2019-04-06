@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Text;
 using Utilities.RequestClient.Extensions;
 using Utilities.RequestClient.Types;
-using Utilities.Serialization;
 using Utilities.Serialization.Options;
 
 namespace Utilities.RequestClient.Base
@@ -55,6 +56,11 @@ namespace Utilities.RequestClient.Base
         private protected MediaTypes MediaType = MediaTypes.Json;
 
         /// <summary>
+        /// Media type formatter
+        /// </summary>
+        private protected MediaTypeFormatter MediaTypeFormatter = new JsonMediaTypeFormatter();
+
+        /// <summary>
         /// Base uri
         /// </summary>
         private protected Uri BaseUri { get; }
@@ -97,17 +103,8 @@ namespace Utilities.RequestClient.Base
             Client.DefaultRequestHeaders.ExpectContinue = false;
             Client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse(MediaType.GetDescription()));
             Client.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse(Encoding.BodyName));
+            SetMediaTypeFormatter(MediaType);
             BaseUri = baseUri;
-        }
-
-        /// <summary>
-        /// Generates string content with given body object
-        /// </summary>
-        /// <param name="body">Body object</param>
-        /// <returns>String content with body object</returns>
-        private protected StringContent GenerateStringContent(object body)
-        {
-            return new StringContent(body.Serialize(SerializationType), Encoding, MediaType.GetDescription());
         }
 
         /// <summary>
@@ -118,6 +115,38 @@ namespace Utilities.RequestClient.Base
         private protected string GetCompleteUrl(string uri)
         {
             return $"{BaseUri}{uri}";
+        }
+
+        /// <summary>
+        /// Set the media type formatter
+        /// </summary>
+        /// <param name="mediaType">The media type</param>
+        private protected void SetMediaTypeFormatter(MediaTypes mediaType)
+        {
+            switch (mediaType)
+            {
+                case MediaTypes.Bson:
+                    MediaTypeFormatter = new BsonMediaTypeFormatter
+                    {
+                        SerializerSettings =
+                        {
+                            NullValueHandling = NullValueHandling.Ignore
+                        }
+                    };
+                    break;
+                case MediaTypes.Xml:
+                    MediaTypeFormatter = new XmlMediaTypeFormatter();
+                    break;
+                default:
+                    MediaTypeFormatter = new JsonMediaTypeFormatter
+                    {
+                        SerializerSettings =
+                        {
+                            NullValueHandling = NullValueHandling.Ignore
+                        }
+                    };
+                    break;
+            }
         }
     }
 }

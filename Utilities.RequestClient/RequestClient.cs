@@ -67,7 +67,9 @@ namespace Utilities.RequestClient
         /// <returns></returns>
         public RequestClient SetEncoding(Encoding encoding)
         {
+            Client.DefaultRequestHeaders.AcceptEncoding.Remove(StringWithQualityHeaderValue.Parse(Encoding.BodyName));
             Encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
+            Client.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse(Encoding.BodyName));
             return this;
         }
 
@@ -83,6 +85,7 @@ namespace Utilities.RequestClient
             Client.DefaultRequestHeaders.Accept.Remove(new MediaTypeWithQualityHeaderValue(MediaType.GetDescription()));
             MediaType = mediaType;
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaType.GetDescription()));
+            SetMediaTypeFormatter(MediaType);
             return this;
         }
 
