@@ -26,8 +26,8 @@ namespace Utilities.RequestClient
             try
             {
                 var response = Client.DeleteAsync(GetCompleteUrl(uri)).Result;
-                var responseContent = typeof(T) == typeof(string) ? response.Content.ReadAsStringAsync().Result.Deserialize<T>(SerializationType) :
-    response.Content.ReadAsAsync<T>(new List<MediaTypeFormatter> { MediaTypeFormatter }).Result;
+                var responseContent = typeof(T) == typeof(string) ? response.Content.ReadAsStringAsync(new List<MediaTypeFormatter> { MediaTypeFormatter }).Result.Deserialize<T>(SerializationType) :
+                                                                    response.Content.ReadAsAsync<T>(new List<MediaTypeFormatter> { MediaTypeFormatter }).Result;
                 return new RequestResult<T> { Result = responseContent, StatusCode = response.StatusCode, ExceptionDetail = response.StatusCode == HttpStatusCode.OK ? string.Empty : responseContent.Serialize() };
             }
             catch (AggregateException ae)

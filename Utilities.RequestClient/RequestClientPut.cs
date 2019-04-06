@@ -31,7 +31,7 @@ namespace Utilities.RequestClient
             {
                 var response = Client.PutAsync(GetCompleteUrl(uri), body, MediaTypeFormatter).Result;
                 var responseContent = typeof(T) == typeof(string) ? response.Content.ReadAsStringAsync().Result.Deserialize<T>(SerializationType) :
-    response.Content.ReadAsAsync<T>(new List<MediaTypeFormatter> { MediaTypeFormatter }).Result;
+                                                                    response.Content.ReadAsAsync<T>(new List<MediaTypeFormatter> { MediaTypeFormatter }).Result;
                 return new RequestResult<T> { Result = responseContent, StatusCode = response.StatusCode, ExceptionDetail = response.StatusCode == HttpStatusCode.OK ? string.Empty : responseContent.Serialize() };
             }
             catch (AggregateException ae)
